@@ -1,3 +1,9 @@
+# Temporaries
+*~
+*.*~*
+# Vims
+*.swp
+
 # Logs
 logs
 *.log
