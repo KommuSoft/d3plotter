@@ -11,3 +11,15 @@ Some of the plotters are interactive. Since the plots are generated with JavaScr
 Bugs can be reported using the [issues](https://github.com/KommuSoft/d3plotter/issues) page on GitHub.
 
 ## Functions
+
+Below, the functions are listed with links to the corresponding anchor:
+
+ - [`plotRows`]()
+ - [`plotBars`]()
+ - [`plotGroupedBars`]()
+
+## `PlotRows`
+
+## `PlotBars`
+
+## `PlotGroupedBars`

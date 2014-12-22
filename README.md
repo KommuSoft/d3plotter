@@ -2,6 +2,10 @@
 
 A set of plotting scripts that are used to plot (default) graphs with `d3.js`.
 
+## Documentations and Samples
+
+Documentation and samples for each plotter function can be found [here](https://github.com/KommuSoft/d3plotter/blob/master/d3plotter/public_html/samples.md).
+
 ## Sample files
 
 Sample `.csv` files originate from:
