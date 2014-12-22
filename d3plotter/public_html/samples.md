@@ -30,6 +30,13 @@ Each *function section* is structured as follows:
  - **sample**: A sample of the expected output for a given data file.
  - **interaction**: a description of the interaction that occurs when a user hovers or clicks on certain elements.
 
+Data is categorized in the following datatypes:
+
+ - `Numeric`: numeric values, these values can be positive or negative can be an integer or a real number;
+ - `String`: textual data, for instance names;
+ - `Date`: a specific day in a specific month in a specific year.
+ - `Time`: a certain moment in a day (specified by hours, minutes and seconds).
+
 ## `PlotRows`
 
 This function plots one or more functions with a varying *x*-axis. The data can be plotted on at most two *y*-axes.

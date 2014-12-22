@@ -1,6 +1,8 @@
 # d3plotter
 
-A set of plotting scripts that are used to plot (default) graphs with `d3.js`.
+A set of plotting scripts that are used to plot (default) graphs with `d3.js`. The package furthermore offers ways to convert certain `.csv` data in one data format to another format.
+
+The `.js` library is located in [`d3plotter/public_html/d3plotter.js`](https://github.com/KommuSoft/d3plotter/blob/master/d3plotter/public_html/d3plotter.js). The data format converters are located at [`converters`](https://github.com/KommuSoft/d3plotter/blob/master/converters).
 
 ## Documentations and Samples
 
