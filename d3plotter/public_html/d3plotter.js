@@ -1,3 +1,10 @@
+plotdatatype = {
+    Numeric : 0,
+    String : 1,
+    Date : 2,
+    Time : 3
+}
+
 function nameAxis(svg, naxis) {
     if (naxis != null) {
         svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + 2 * margin.bottom / 3) + ")").style("text-anchor", "middle").text(naxis[0]);
