@@ -1,4 +1,5 @@
 # Samples
+<link rel="stylesheet" href="d3plotter.css">
 <script language="JavaScript" src="d3/d3.min.js"></script>
 <script language="JavaScript" src="d3plotter.js"></script>
 
