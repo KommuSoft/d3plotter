@@ -50,8 +50,26 @@ are not ordered, the line will move back.
 
 ### Sample
 
-```JavaScript
+**HTML**
+
+```HTML
+<div id="sample-plotrows"></div>
 ```
+
+**JavaScript**
+
+```JavaScript
+var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
+var rootdiv = d3.select("#sample-plotrows");
+var dsid = 91;
+var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+plotGroupedBars(svg, "","","",[""], [""]);
+```
+
+**Output**
+
+<div id="sample-plotrows"></div>
 
 ### Interaction
 
