@@ -11,6 +11,7 @@ Documentation and samples for each plotter function can be found [here](https://
 Sample `.csv` files originate from:
 
  - [IBM](http://www-01.ibm.com/support/knowledgecenter/SVU13_7.2.1/com.ibm.ismsaas.doc/import/r_sample_csv_files.html)
+ - [D3 Tips and Tricks](https://leanpub.com/D3-Tips-and-Tricks)
 
 ## Contributors
 
