@@ -8,6 +8,9 @@
 logs
 *.log
 
+#Binaries
+d3plotter/public_html/samples.htm
+
 # Runtime data
 pids
 *.pid
