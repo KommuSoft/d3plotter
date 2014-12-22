@@ -1,0 +1,9 @@
+simpleci
+sci.operatingsystem
+SRM_SaaS_ES,MXCIImport,AddChange,EN
+CI_CHANGEBY,CI_CHANGEDATE,CILOCATION,CI_CINUM,CINAME,DESCRIPTION,STATUS,SDAREL.INSTALLEDON,MODELOBJECT_DISPLAYNAME,OPERATINGSYSTEM_FQDN,MODELOBJECT_CONTEXTIP,MODELOBJECT_LABEL,MODELOBJECT_OBJECTTYPE,OPERATINGSYSTEM_KERNELVERSION,OPERATINGSYSTEM_NAME,OPERATINGSYSTEM_OSVERSION,OPERATINGSYSTEM_OSMODE
+MAXADMIN,2010-04-14T17:20:19+01:00,,Red Hat--serialnumber1,Red Hat serial num serialnumber1,Linux Operating System not installed,NOT READY,,Red Hat Enterprise Linux ES,,,Red Hat,Operating System,2.6.9-34.ELsmp,Red Hat OS,Red Hat Enterprise Linux ES release 4,
+MAXADMIN,2010-04-14T17:20:19+01:00,,Red Hat--serialnumber2,Red Hat serial num serialnumber2,Linux Operating System not installed,NOT READY,,Red Hat Enterprise Linux ES,,,Red Hat,Operating System,2.6.9-34.ELsmp,Red Hat OS,Red Hat Enterprise Linux ES release 4,
+MAXADMIN,2010-04-14T17:20:19+01:00,,Red Hat--serialnumber3,Red Hat serial num serialnumber3,Linux Operating System not installed,NOT READY,,Red Hat Enterprise Linux ES,,,Red Hat,Operating System,2.6.9-34.ELsmp,Red Hat OS,Red Hat Enterprise Linux ES release 4,
+MAXADMIN,2010-04-14T17:20:19+01:00,,SunOS--2164124912,SunOS serial num 2164124912,Sun Operating System not installed,NOT READY,,SunOS Release 5.8,,,Sun,Operating System,SunOS Release 5.8 Version Generic_108528-07 64-bit [UNIX(R) System V Release 4.0],Sun OS,SunOS Release 5.8,
+MAXADMIN,2010-04-14T17:20:19+01:00,,SunOS--4564124512,SunOS serial num 4564124512,Sun Operating System not installed,NOT READY,,SunOS Release 5.8,,,Sun,Operating System,SunOS Release 5.8 Version Generic_108528-07 64-bit [UNIX(R) System V Release 4.0],Sun OS,SunOS Release 5.8,
