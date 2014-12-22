@@ -14,11 +14,46 @@ Bugs can be reported using the [issues](https://github.com/KommuSoft/d3plotter/i
 
 Below, the functions are listed with links to the corresponding anchor:
 
- - [`plotRows`](#plotrows)
- - [`plotBars`](#plotbars)
- - [`plotGroupedBars`](#plotgroupedbars)
+ - [`plotBars`](#plotbars);
+ - [`plotGroupedBars`](#plotgroupedbars); and
+ - [`plotRows`](#plotrows).
+
+The first arguments of every such function are:
+
+ - `svg`: The `<svg>` element to draw content to; and
+ - `dfile`: The name of the `.csv` file (including extension) where the data to plot, originates from.
+
+Each *function section* is structured as follows:
+
+ - **data format**: The expected format of the data: do we expect numerical, alphanumerical or another format of data, how should the data be represented (rows/columns)
+ - **arguments**: What parameters can be set and how is it done.
+ - **sample**: A sample of the expected output for a given data file.
+ - **interaction**: a description of the interaction that occurs when a user hovers or clicks on certain elements.
 
 ## `PlotRows`
+
+This function plots one or more functions with a varying *x*-axis. The data can be plotted on at most two *y*-axes.
+
+### Data format
+
+The `.csv` file is structured as follows:
+
+> Minimum **two** columns. The columns should be named (alphanumerical values on
+> the first row of the `.csv` file). The *x* row contains numerical data
+> preferably ordered the *y* row(s) should contain numerical data as well.
+
+The function will detect the bounds of the *x* and *y* axes and plot the
+accordingly by printing lines between each *(x,y)* tuple. If the *x* rows
+are not ordered, the line will move back.
+
+### Arguments
+
+### Sample
+
+```JavaScript
+```
+
+### Interaction
 
 ## `PlotBars`
 
