@@ -1,8 +1,8 @@
 plotdatatype = {
-    Numeric : 0,
-    String : 1,
-    Date : 2,
-    Time : 3
+    Numeric: 0,
+    String: 1,
+    Date: 2,
+    Time: 3
 }
 
 function nameAxis(svg, naxis) {
@@ -187,7 +187,7 @@ function plotGroupedBars(svg, dfile, namecol, groupcol, valuecols, naxis) {
                     for (var j = 0; j < valuecols.length; j++) {
                         var vali = old + bari[k][valuecols[j]];
                         svg.append("g").append("rect")
-                                .attr("x", thex(namesa[i]) + (k+0.5) * thex.rangeBand() / bari.length)
+                                .attr("x", thex(namesa[i]) + (k + 0.5) * thex.rangeBand() / bari.length)
                                 .attr("y", they(vali))
                                 .attr("height", they(old) - they(vali))
                                 .attr("width", thex.rangeBand() / (2 * bari.length - 1)).style("fill", color(valuecols[j]));

@@ -1,4 +1,6 @@
 # Samples
+<script language="JavaScript" src="d3/d3.min.js"></script>
+<script language="JavaScript" src="d3plotter.js"></script>
 
 This page contains samples that document the functions implemented in `d3plotter.js` a (higher level) library that provides common commands to plot `.csv` data.
 
@@ -9,6 +11,10 @@ Some of the plotters are interactive. Since the plots are generated with JavaScr
 ## Bugs?
 
 Bugs can be reported using the [issues](https://github.com/KommuSoft/d3plotter/issues) page on GitHub.
+
+## Usage
+
+One needs to include the [`d3plotter.css`](d3plotter.css) stylesheet and the [`d3plotter.js`](d3plotter.js) javascript file.
 
 ## Functions
 
@@ -55,6 +61,13 @@ are not ordered, the line will move back.
 
 ### Arguments
 
+Besides the arguments introduced in the [introduction](#functions), the following
+arguments must be given.
+
+ - `ycols`: A list of names of the columns to plot with the first *y*-axis, if `null` no graphs are plot with that axis.
+ - `y2cols`: A list of names of the columns to plot with the second *y*-axis, if `null` no graphs are plot with that axis.
+ - `naxis`: The name of the *x*, *y* and *y2* axis, if `null`, the axes are not named, if length does not match 3, the known axis are labeled.
+
 ### Sample
 
 **HTML**
@@ -68,15 +81,22 @@ are not ordered, the line will move back.
 ```JavaScript
 var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
 var rootdiv = d3.select("#sample-plotrows");
-var dsid = 91;
 var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
 var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-plotGroupedBars(svg, "","","",[""], [""]);
+plotRows(svg,"","","",[""], [""]);
 ```
 
 **Output**
 
 <div id="sample-plotrows"></div>
+<script language="JavaScript">
+var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
+var rootdiv = d3.select("#sample-plotrows");
+var dsid = 91;
+var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+plotRows(svg,"csvfiles/stocks-alter.csv",["AAPL","GOOG","MSFT","IBM"],["Time","Stock quote"]);
+</script>
 
 ### Interaction
 
