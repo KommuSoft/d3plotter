@@ -14,9 +14,9 @@ Bugs can be reported using the [issues](https://github.com/KommuSoft/d3plotter/i
 
 Below, the functions are listed with links to the corresponding anchor:
 
- - [`plotRows`]()
- - [`plotBars`]()
- - [`plotGroupedBars`]()
+ - [`plotRows`](#plotrows)
+ - [`plotBars`](#plotbars)
+ - [`plotGroupedBars`](#plotgroupedbars)
 
 ## `PlotRows`
 
