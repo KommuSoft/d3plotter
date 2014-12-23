@@ -16,7 +16,7 @@ function normalizeName(original) {
     return original.replace(/\s+/g, '');
 }
 
-function plotRows(svg, dfile, ycols, y2cols, naxis) {//todo y2 if not null
+function plotRows(svg, dfile, xcol, ycols, y2cols, naxis) {//todo y2 if not null
     var datsid = dsid;
     var legendSpace = width / ycols.length;
     var thex = d3.scale.linear().range([0, width]);
@@ -39,10 +39,13 @@ function plotRows(svg, dfile, ycols, y2cols, naxis) {//todo y2 if not null
     }
 
     d3.csv(dfile, function(error, data) {
+        console.log(data);
         var miny = 0;
         var maxy = 1e-6;
         var rowi = 0;
         data.forEach(function(d) {
+            //console.log(JSON.stringify(d));
+            console.log(d);
             d.rowindexnumber = rowi;
             rowi++;
             for (var i = 0; i < ycols.length; i++) {
@@ -52,7 +55,9 @@ function plotRows(svg, dfile, ycols, y2cols, naxis) {//todo y2 if not null
                 miny = Math.min(miny, res);
                 maxy = Math.max(maxy, res);
             }
-        });
+        });/*
+        console.log(rowi);
+        console.log(thex(rowi));*/
         thex.domain([0, rowi + 1]);
         they.domain([miny, maxy]);
         they2.domain([miny, maxy]);

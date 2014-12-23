@@ -25,6 +25,12 @@ Below, the functions are listed with links to the corresponding anchor:
  - [`plotGroupedBars`](#plotgroupedbars); and
  - [`plotRows`](#plotrows).
 
+The following variables are implicit: they must be defined before and are assumed to be set before calling the method:
+
+ - `width`: the width of the canvas;
+ - `height`: the height of the canvas;
+ - `dsid`: the 
+
 The first arguments of every such function are:
 
  - `svg`: The `<svg>` element to draw content to; and
@@ -65,6 +71,7 @@ are not ordered, the line will move back.
 Besides the arguments introduced in the [introduction](#functions), the following
 arguments must be given.
 
+ - `xcol`: The name of the column that contains the values for the *x*-axis, if `null` the row number is used.
  - `ycols`: A list of names of the columns to plot with the first *y*-axis, if `null` no graphs are plot with that axis.
  - `y2cols`: A list of names of the columns to plot with the second *y*-axis, if `null` no graphs are plot with that axis.
  - `naxis`: The name of the *x*, *y* and *y2* axis, if `null`, the axes are not named, if length does not match 3, the known axis are labeled.
@@ -82,10 +89,10 @@ arguments must be given.
 ```JavaScript
 var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
 var rootdiv = d3.select("#sample-plotrows");
-var dsid = 91;
+var dsid = 1;
 var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
 var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-plotRows(svg,"csvfiles/stocks-alter.csv",["AAPL","GOOG","MSFT","IBM"],["Time","Stock quote"]);
+plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],null,["Time","Stock quote"]);
 ```
 
 **Output**
@@ -94,10 +101,10 @@ plotRows(svg,"csvfiles/stocks-alter.csv",["AAPL","GOOG","MSFT","IBM"],["Time","S
 <script language="JavaScript">
 var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
 var rootdiv = d3.select("#sample-plotrows");
-var dsid = 91;
+var dsid = 1;
 var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
 var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-plotRows(svg,"csvfiles/stocks-alter.csv",["AAPL","GOOG","MSFT","IBM"],["Time","Stock quote"]);
+plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],null,["Time","Stock quote"]);
 </script>
 
 ### Interaction
