@@ -216,18 +216,22 @@ function plotGroupedBars(svg, dfile, namecol, groupcol, valuecols, naxis) {
         nameAxis(svg, naxis);
     })
 }
-
+var dsid = 0;
+var width = 800;
+var height = 600;
+var margin = {top: 35, right: 100, bottom: 75, left: 100};
 //detection of automatic tags and its automatic plotting replacement
+$(function() {
 var plotid = 0;
-$('[plotter]').each(function() {
-    var $this = $(this);
-    var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
-    var rootdiv = d3.select($this);
-    var plotfunc = window[$this.attr("plotter")];
-    var file = $this.attr("dfile");
-    var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
-    var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    plotRows(svg, file, "Month", ["AAPL", "GOOG", "MSFT", "IBM"], null, ["Time", "Stock quote"]);
-    //$this.attr()
-    //$this.html(SizeFormatting.format($this.attr('data-sizeformat')));
-});
+        $('*[plotter]').each(function() {
+var $this = $(this);
+        alert("Foo");
+        margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
+        var plotfunc = window[$this.attr("plotter")];
+        $this.attr('id','plotid'+plotid);
+        var rootdiv = d3.select('#plotid'+plotid);
+        var file = $this.attr("dfile");
+        var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+        var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        plotRows(svg, file, "Month", ["AAPL", "GOOG", "MSFT", "IBM"], null, ["Time", "Stock quote"]);
+})});
