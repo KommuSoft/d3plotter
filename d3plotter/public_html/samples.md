@@ -1,5 +1,6 @@
 # Samples
 <link rel="stylesheet" href="d3plotter.cssset">
+<script language="JavaScript" src="jquery.min.js"></script>
 <script language="JavaScript" src="d3/d3.min.js"></script>
 <script language="JavaScript" src="d3plotter.js"></script>
 
@@ -16,6 +17,12 @@ Bugs can be reported using the [issues](https://github.com/KommuSoft/d3plotter/i
 ## Usage
 
 One needs to include the [`d3plotter.css`](d3plotter.css) stylesheet and the [`d3plotter.js`](d3plotter.js) javascript file.
+
+The library can also be used without the programmer having to use *JavaScript* himself, but simply by providing a tag with the `plotter` attribute, like:
+
+    <div plotter="plotBars" dfile="data.csv"></div>
+
+In that case the *JQuery* libarary must be imprted as well. The library will than introduce an `svg` in the `<div>` automatically.
 
 ## Functions
 
@@ -95,9 +102,15 @@ var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + 
 plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],null,["Time","Stock quote"]);
 ```
 
+**HTML (alternative)**
+
+```HTML
+<div plotter="plotRows" dfile="csvfiles/stock-alter.csv"></div>
+```
+
 **Output**
 
-<div id="sample-plotrows"></div>
+<!--<div id="sample-plotrows"></div>
 <script language="JavaScript">
 var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
 var rootdiv = d3.select("#sample-plotrows");
@@ -105,7 +118,8 @@ var dsid = 1;
 var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
 var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],null,["Time","Stock quote"]);
-</script>
+</script>-->
+<div plotter="plotRows" dfile="csvfiles/stocks-alter.csv"></div>
 
 ### Interaction
 

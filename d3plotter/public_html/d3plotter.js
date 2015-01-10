@@ -5,6 +5,16 @@ plotdatatype = {
     Time: 3
 }
 
+var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+var ARGUMENT_NAMES = /([^\s,]+)/g;
+function getParamNames(func) {
+    var fnStr = func.toString().replace(STRIP_COMMENTS, '');
+    var result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
+    if (result === null)
+        result = [];
+    return result;
+}
+
 function nameAxis(svg, naxis) {
     if (naxis != null) {
         svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + 2 * margin.bottom / 3) + ")").style("text-anchor", "middle").text(naxis[0]);
@@ -206,3 +216,18 @@ function plotGroupedBars(svg, dfile, namecol, groupcol, valuecols, naxis) {
         nameAxis(svg, naxis);
     })
 }
+
+//detection of automatic tags and its automatic plotting replacement
+var plotid = 0;
+$('[plotter]').each(function() {
+    var $this = $(this);
+    var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
+    var rootdiv = d3.select($this);
+    var plotfunc = window[$this.attr("plotter")];
+    var file = $this.attr("dfile");
+    var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+    var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    plotRows(svg, file, "Month", ["AAPL", "GOOG", "MSFT", "IBM"], null, ["Time", "Stock quote"]);
+    //$this.attr()
+    //$this.html(SizeFormatting.format($this.attr('data-sizeformat')));
+});
