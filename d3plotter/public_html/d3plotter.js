@@ -17,8 +17,8 @@ function getParamNames(func) {
 
 function nameAxis(svg, naxis) {
     if (naxis != null) {
-        svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + 2 * margin.bottom / 3) + ")").style("text-anchor", "middle").text(naxis[0]);
-        svg.append("text").attr("transform", "rotate(-90)").attr("y", 0 - margin.left).attr("x", 0 - (height / 2)).attr("dy", "1em").style("text-anchor", "middle").text(naxis[1]);
+        svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + 2 * margin.bottom / 3) + ")").attr("class", "chart axisname").style("text-anchor", "middle").text(naxis[0]);
+        svg.append("text").attr("transform", "rotate(-90)").attr("y", 0 - margin.left).attr("x", 0 - (height / 2)).attr("dy", "1em").attr("class", "chart axisname").style("text-anchor", "middle").text(naxis[1]);
     }
 }
 
@@ -47,14 +47,25 @@ function plotRows(svg, dfile, xcol, ycols, y2cols, naxis) {//todo y2 if not null
 
         active[ycols[i]] = 1;
     }
+    for (var i = 0; i < y2cols.length; i++) {
+        var ycolsi = y2cols[i];
+        lines.push(d3.svg.line().x(function(d) {
+            return thex(d.rowindexnumber);
+        }).y(function(d) {
+            return they2(d[this]);
+        }.bind(ycolsi)));
+
+        active[y2cols[i]] = 1;
+    }
 
     d3.csv(dfile, function(error, data) {
         var miny = 0;
         var maxy = 1e-6;
+        var miny2 = 0;
+        var maxy2 = 1e-6;
         var rowi = 0;
         data.forEach(function(d) {
-            d.rowindexnumber = rowi;
-            rowi++;
+            d.rowindexnumber = rowi++;
             for (var i = 0; i < ycols.length; i++) {
                 var ycoli = ycols[i];
                 var res = +d[ycoli];
@@ -62,22 +73,37 @@ function plotRows(svg, dfile, xcol, ycols, y2cols, naxis) {//todo y2 if not null
                 miny = Math.min(miny, res);
                 maxy = Math.max(maxy, res);
             }
+            for (var i = 0; i < y2cols.length; i++) {
+                var ycoli = y2cols[i];
+                var res = +d[ycoli];
+                d[ycoli] = res;
+                miny2 = Math.min(miny2, res);
+                maxy2 = Math.max(maxy2, res);
+            }
         });
         thex.domain([0, rowi + 1]);
         they.domain([miny, maxy]);
-        they2.domain([miny, maxy]);
+        they2.domain([miny2, maxy2]);
         var color = d3.scale.category10();
         color.domain(ycols);
-        for (var i = 0; i < lines.length; i++) {//TODO: unique identifiers per plot
+        for (var i = 0; i < ycols.length; i++) {//TODO: unique identifiers per plot
             svg.append("path").attr("class", "line").attr("id", "d" + datsid + "plot" + normalizeName(ycols[i])).attr("d", lines[i](data)).attr("data-legend", ycols[i]).style("stroke", color(ycols[i]));
             svg.append("text").attr("x", (legendSpace / 2) + i * legendSpace).attr("y", height + margin.bottom - 5).attr("class", "legend").style("fill", color(ycols[i])).on("click", function() {
                 active[this] = 1 - active[this];
                 d3.select("#d" + datsid + "plot" + normalizeName(this)).transition().duration(100).style("opacity", active[this]);
             }.bind(ycols[i])).text(ycols[i]);
         }
+        for (var i = ycols.length; i < lines.length; i++) {//TODO: unique identifiers per plot
+            var j = i - ycols.length;
+            svg.append("path").attr("class", "line d3y2").attr("id", "d" + datsid + "plot" + normalizeName(y2cols[j])).attr("d", lines[i](data)).attr("data-legend", y2cols[j]).style("stroke", color(y2cols[j]));
+            svg.append("text").attr("x", (legendSpace / 2) + i * legendSpace).attr("y", height + margin.bottom - 5).attr("class", "legend").style("fill", color(y2cols[j])).on("click", function() {
+                active[this] = 1 - active[this];
+                d3.select("#d" + datsid + "plot" + normalizeName(this)).transition().duration(100).style("opacity", active[this]);
+            }.bind(y2cols[j])).text(y2cols[j]);
+        }
         svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
         svg.append("g").attr("class", "y axis").call(yAxis);
-        svg.append("g").attr("class", "y axis").attr("transform", "translate(" + (width - 30) + " ,0)").call(y2Axis);
+        svg.append("g").attr("class", "y axis d3y2").attr("transform", "translate(" + (width - 30) + " ,0)").call(y2Axis);
         nameAxis(svg, naxis);
     });
 }
@@ -222,16 +248,32 @@ var height = 600;
 var margin = {top: 35, right: 100, bottom: 75, left: 100};
 //detection of automatic tags and its automatic plotting replacement
 $(function() {
-var plotid = 0;
-        $('*[plotter]').each(function() {
-var $this = $(this);
-        alert("Foo");
+    var plotid = 0;
+    $('*[plotter]').each(function() {
+        var $this = $(this);
         margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
-        var plotfunc = window[$this.attr("plotter")];
-        $this.attr('id','plotid'+plotid);
-        var rootdiv = d3.select('#plotid'+plotid);
-        var file = $this.attr("dfile");
-        var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
-        var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        plotRows(svg, file, "Month", ["AAPL", "GOOG", "MSFT", "IBM"], null, ["Time", "Stock quote"]);
-})});
+        //var plotfunc = window[$this.attr("plotter")];
+        var plotter = $this.attr("plotter");
+        $this.attr('id', 'plotid' + plotid);
+        var rootdiv = d3.select('#plotid' + plotid);
+        if (plotter === "plotRows") {
+            var file = $this.attr("dfile");
+            var ycols = null;
+            var y2cols = null;
+            var naxis = null;
+            try {
+                var ycols = $this.attr("ycols").split(",");
+                var y2cols = $this.attr("y2cols").split(",");
+                var naxis = $this.attr("naxis").split(",");
+            } catch (e) {
+            }
+            //alert(JSON.stringify(ycols.split(',')));
+            var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+            var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            plotRows(svg, file, null, ycols, y2cols, naxis);
+        } else if(plotter === "sankey") {
+            
+        }
+    })
+});

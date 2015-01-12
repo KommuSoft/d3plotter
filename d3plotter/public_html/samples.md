@@ -1,5 +1,5 @@
 # Samples
-<link rel="stylesheet" href="d3plotter.cssset">
+<link rel="stylesheet" href="d3plotter.css">
 <script language="JavaScript" src="jquery.min.js"></script>
 <script language="JavaScript" src="d3/d3.min.js"></script>
 <script language="JavaScript" src="d3plotter.js"></script>
@@ -105,14 +105,17 @@ plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],nu
 **HTML (alternative)**
 
 ```HTML
-<div plotter="plotRows" dfile="csvfiles/stock-alter.csv"></div>
+<div plotter="plotRows" dfile="csvfiles/stock-alter.csv" xcol="Month" ycols='["AAPL","GOOG","MSFT","IBM"]' naxis='["Time","Stock quote"]'></div>
 ```
 
 **Output**
 
-<div plotter="plotRows" dfile="csvfiles/stocks-alter.csv"></div>
+<div plotter="plotRows" dfile="csvfiles/stocks-alter.csv" xcol="Month" ycols='["AAPL","GOOG","MSFT","IBM"]' naxis='["Time","Stock quote"]'></div>
 
 ### Interaction
+
+ - The legend below the graph is interactive: by clicking on the elements, the lines disappear an reappear on the screen.
+ - By default, the lines appear sequentially (specified by the order of `ycols` and `y2cols`). This animation is repeated in the event of reappearance.
 
 ## `PlotBars`
 

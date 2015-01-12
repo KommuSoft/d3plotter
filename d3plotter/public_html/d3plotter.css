@@ -3,12 +3,18 @@ path {
     stroke-width: 2;
     fill: none;
 }
+.d3y2 {
+    stroke-dasharray: 5, 5;
+}
 .axis path,
 .axis line {
     fill: none;
     stroke: grey;
     stroke-width: 1;
     shape-rendering: crispEdges;
+}
+.axis text {
+    font-size: 1vw;
 }
 .legend rect {
     fill:white;
@@ -17,7 +23,14 @@ path {
 }
 
 .legend {
-    font-size: 16px;
+    font-size: 1vw;
+    font-weight: bold;
+    text-anchor: middle;
+    cursor: pointer; cursor: hand;
+}
+
+.axisname {
+    font-size: 1vw;
     font-weight: bold;
     text-anchor: middle;
 }
