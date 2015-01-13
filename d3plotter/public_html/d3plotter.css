@@ -44,3 +44,37 @@ path {
     font: 10px sans-serif;
     text-anchor: middle;
 }
+
+.dirnetw path.link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 2px;
+}
+
+.dirnetw circle {
+    fill: #ccc;
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.dirnetw text {
+    fill: #000;
+    font: 10px sans-serif;
+    pointer-events: none;
+}
+
+.node rect {
+    stroke: #333;
+    stroke-width: 1.5px;
+    fill: #fff;
+}
+
+.edgeLabel rect {
+    fill: #fff;
+}
+
+.edgePath {
+    stroke: #333;
+    stroke-width: 1.5px;
+    fill: none;
+}
