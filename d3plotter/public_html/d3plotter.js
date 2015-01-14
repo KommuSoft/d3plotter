@@ -1,3 +1,7 @@
+var dsid = 0;
+var width = 800;
+var height = 600;
+var margin = {top: 35, right: 100, bottom: 75, left: 100};
 plotdatatype = {
     Numeric: 0,
     String: 1,
@@ -16,25 +20,52 @@ function getParamNames(func) {
 }
 
 function nameAxis(svg, naxis) {
-    if (naxis != null) {
+    if (naxis !== null) {
         svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + 2 * margin.bottom / 3) + ")").attr("class", "chart axisname").style("text-anchor", "middle").text(naxis[0]);
         svg.append("text").attr("transform", "rotate(-90)").attr("y", 0 - margin.left).attr("x", 0 - (height / 2)).attr("dy", "1em").attr("class", "chart axisname").style("text-anchor", "middle").text(naxis[1]);
     }
+}
+
+function splitArguments(query) {
+    if (query === "" || query === null || typeof query === 'undefined') {
+        return new Array();
+    } else {
+        return query.split(",");
+    }
+}
+
+function ordflt(x, dflt) {
+    if (x === null || typeof x === 'undefined') {
+        return dflt;
+    } else {
+        return x;
+    }
+}
+
+function isdf(x) {
+    return (typeof x !== 'undefined');
 }
 
 function normalizeName(original) {
     return original.replace(/\s+/g, '');
 }
 
-function plotRows(svg, dfile, xcol, ycols, y2cols, naxis) {
-    var datsid = dsid;
-    var legendSpace = width / ycols.length;
-    var thex = d3.scale.linear().range([0, width]);
-    var they = d3.scale.linear().range([height, 0]);
-    var they2 = d3.scale.linear().range([height, 0]);
+function plotRows(svg, dfile, xcol, ycols, y2cols, naxis, filled) {
+    xcol = ordflt(xcol,"rowindexnumber");
+    var datsid = dsid++;
+    var widi = width;
+    var heii = height;
+    var legendSpace = widi / (ycols.length + y2cols.length);
+    var thex = d3.scale.linear().range([0, widi]);
+    var they = d3.scale.linear().range([heii, 0]);
     var xAxis = d3.svg.axis().scale(thex).orient("bottom");
     var yAxis = d3.svg.axis().scale(they).orient("left");
-    var y2Axis = d3.svg.axis().scale(they2).orient("right");
+    var they2 = they;
+    var y2Axis = yAxis;
+    if (y2cols.length > 0) {
+        they2 = d3.scale.linear().range([heii, 0]);
+        y2Axis = d3.svg.axis().scale(they2).orient("right");
+    }
     var lines = new Array();
     var active = new Object();
     for (var i = 0; i < ycols.length; i++) {
@@ -88,7 +119,7 @@ function plotRows(svg, dfile, xcol, ycols, y2cols, naxis) {
         color.domain(ycols);
         for (var i = 0; i < ycols.length; i++) {//TODO: unique identifiers per plot
             svg.append("path").attr("class", "line").attr("id", "d" + datsid + "plot" + normalizeName(ycols[i])).attr("d", lines[i](data)).attr("data-legend", ycols[i]).style("stroke", color(ycols[i]));
-            svg.append("text").attr("x", (legendSpace / 2) + i * legendSpace).attr("y", height + margin.bottom - 5).attr("class", "legend").style("fill", color(ycols[i])).on("click", function() {
+            svg.append("text").attr("x", (legendSpace / 2) + i * legendSpace).attr("y", heii + margin.bottom - 5).attr("class", "legend").style("fill", color(ycols[i])).on("click", function() {
                 active[this] = 1 - active[this];
                 d3.select("#d" + datsid + "plot" + normalizeName(this)).transition().duration(100).style("opacity", active[this]);
             }.bind(ycols[i])).text(ycols[i]);
@@ -96,15 +127,209 @@ function plotRows(svg, dfile, xcol, ycols, y2cols, naxis) {
         for (var i = ycols.length; i < lines.length; i++) {//TODO: unique identifiers per plot
             var j = i - ycols.length;
             svg.append("path").attr("class", "line d3y2").attr("id", "d" + datsid + "plot" + normalizeName(y2cols[j])).attr("d", lines[i](data)).attr("data-legend", y2cols[j]).style("stroke", color(y2cols[j]));
-            svg.append("text").attr("x", (legendSpace / 2) + i * legendSpace).attr("y", height + margin.bottom - 5).attr("class", "legend").style("fill", color(y2cols[j])).on("click", function() {
+            svg.append("text").attr("x", (legendSpace / 2) + i * legendSpace).attr("y", heii + margin.bottom - 5).attr("class", "legend").style("fill", color(y2cols[j])).on("click", function() {
                 active[this] = 1 - active[this];
                 d3.select("#d" + datsid + "plot" + normalizeName(this)).transition().duration(100).style("opacity", active[this]);
             }.bind(y2cols[j])).text(y2cols[j]);
         }
-        svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+        svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + heii + ")").call(xAxis);
         svg.append("g").attr("class", "y axis").call(yAxis);
-        svg.append("g").attr("class", "y axis d3y2").attr("transform", "translate(" + (width - 30) + " ,0)").call(y2Axis);
+        svg.append("g").attr("class", "y axis d3y2").attr("transform", "translate(" + (widi - 30) + " ,0)").call(y2Axis);
         nameAxis(svg, naxis);
+    });
+}
+
+function plotNetwork(svg, dfile) {
+    var datsid = dsid++;
+    var thex = d3.scale.linear().range([0, width]).domain([0, 1]);
+    var they = d3.scale.linear().range([height, 0]).domain([0, 1]);
+
+    function fx(d) {
+        return d.x;
+    }
+    ;
+    function fy(d) {
+        return d.y;
+    }
+    ;
+
+    var rollup = d3.rollup().x(function(d) {
+        return fx(d);
+    }).y(function(d) {
+        return fy(d);
+    });
+
+    d3.json(dfile, function(json) {
+        var graph = rollup(json);
+
+        var link = svg.selectAll(".link")
+                .data(graph.links)
+                .enter().append("g")
+                .attr("class", "networklink");
+
+        svg.selectAll(".networklink")
+                .data(graph.links)
+                .append("path")
+                .attr("class", function(d) {
+                    return "link " + "from" + d.source.nodes[0].Number + " to" + d.target.nodes[0].Number;
+                })
+                .attr("id", function(d) {
+                    return "link" + "from" + d.source.nodes[0].Number + "to" + d.target.nodes[0].Number;
+                })
+                .attr("d", function(d) {
+                    var sx = d.source.x, sy = d.source.y,
+                            tx = d.target.x, ty = d.target.y, dx = tx - sx, dy = ty - sy;
+                    var dr = 2 * Math.sqrt(dx * dx + dy * dy), dry = dr, la = 0, sw = 1, xr = 0;//console.log(dr);
+                    if (dx === 0 && dy === 0) {
+                        xr = 47;
+                        la = 1;
+                        sw = 0;
+                        dr = 30;
+                        dry = 20;
+                        tx = +tx + 0.0001;
+                        ty = +ty + 0.0001;
+                    }
+                    return "M" + sx + "," + sy + "A" + dr + "," + dry + " " + xr + " " + la + "," + sw + " " + tx + "," + ty;
+                })
+                .style("stroke", "grey")
+                .style("stroke-width", function(d) {
+                    return d.links[0].thick;
+                });
+
+        var node = svg.selectAll(".node")
+                .data(graph.nodes)
+                .enter().append("g")
+                .attr("class", "node")
+                .style("pointer-events", "all")
+                .append("circle")
+                .attr("cx", function(d, i) {
+                    return d.x
+                })
+                .attr("cy", function(d, i) {
+                    return d.y
+                })
+                .attr("r", function(d, i) {
+                    return +d.nodes[0].r;
+                })
+                //.attr("filter", "url(#f3)")
+                .style("fill", function(d, i) {
+                    return d.nodes[0].fill;
+                })
+                .style("stroke", "grey")
+                .style("stroke-width", "2")
+                .on("mouseover", function(d) {
+
+                    var xPosition = thex(50 + parseFloat(d3.select(this).attr("cx")));
+                    var yPosition = they(10 + parseFloat(d3.select(this).attr("cy")));
+
+                    /*d3.selectAll(".to" + d.nodes[0].Number + ":not(.pathlabel)")
+                     .transition()
+                     .duration(10)
+                     .style("stroke", "orange")
+                     .style("display", "block")
+                     .style("stroke-opacity", ".7")
+                     ;*/
+
+                    d3.selectAll(".from" + d.nodes[0].Number + ":not(.pathlabel)")
+                            .transition()
+                            .duration(10)
+                            .style("stroke", function(d) {
+                                return d.links[0].color;
+                            })
+                            .style("display", "block")
+                            .style("stroke-opacity", ".7")
+                            ;
+
+                    /*d3.selectAll(".pathlabel.to" + d.nodes[0].Number)
+                     .style("fill", "orange")
+                     .style("stroke", "white")
+                     .style("display", "block");*/
+
+                    d3.selectAll(".pathlabel.from" + d.nodes[0].Number)
+                            .style("fill", "blue")
+                            .style("stroke", "white")
+                            .style("display", "block");
+
+                    d3.select(this).style("fill", "LightGoldenRodYellow");
+
+                    /*d3.select("#tooltip")
+                     .style("left", xPosition + "px")
+                     .style("top", yPosition + "px")
+                     .select("#name")
+                     .text(d.nodes[0].name);
+                     
+                     d3.select("#tooltip")
+                     .select("#number")
+                     .text(d.nodes[0].Number);
+                     
+                     d3.select("#tooltip")
+                     .select("#pos")
+                     .text(d.nodes[0].Position);
+                     
+                     d3.select("#tooltip").classed("hidden", false);*/
+
+                })
+                .on("mouseout", function(d) {
+
+                    /*d3.selectAll(".to" + d.nodes[0].Number + ":not(.pathlabel)")
+                     .style("stroke", "grey")
+                     .style("stroke-opacity", ".2");*/
+
+                    d3.selectAll(".from" + d.nodes[0].Number + ":not(.pathlabel)")
+                            .style("stroke", "grey")
+                            .style("stroke-opacity", ".2");
+
+                    d3.selectAll(".pathlabel")
+                            .style("fill", "grey")
+                            .style("display", "none");
+
+                    //d3.select("#tooltip").classed("hidden", true);
+                    d3.select(this).style("fill", d.nodes[0].fill);
+                });
+
+        svg.selectAll(".node")
+                .data(graph.nodes)
+                .append("text")
+                .text(function(d, i) {
+                    return d.nodes[0].Text;
+                })
+                .attr("x", function(d, i) {
+                    return d.x;
+                })
+                .attr("y", function(d, i) {
+                    return d.y;
+                })
+                .style("font-family", "sans-serif")
+                .style("font-size", "11px")
+                .style("text-anchor", "middle")
+                .style("dominant-baseline", "central")
+                .style("stroke", "black")
+                .style("pointer-events", "none");
+
+        svg.selectAll("textpaths")
+                .data(graph.links)
+                .enter()
+                .append("text")
+                .style("font-size", "12px")
+                .attr("class", "texts")
+                .attr("x", "0")
+                .attr("y", "0")
+                .append("textPath")
+                .attr("class", function(d) {
+                    return "pathlabel " + "from" + d.source.nodes[0].Number + " to" + d.target.nodes[0].Number;
+                })
+                .attr("xlink:href", function(d) {
+                    return '#' + "link" + "from" + d.source.nodes[0].Number + "to" + d.target.nodes[0].Number
+                })
+                .text(function(d) {
+                    return d.value;
+                })
+                .attr("startOffset", "40%")
+                .style("stroke", "black")
+                .attr("filter", "url(#f3)")
+                .style("fill", "white")
+                .style("font-family", "sans-serif")
+                .style("display", "none");
     });
 }
 
@@ -123,142 +348,6 @@ function plotDot(svg, dot) {
     var bbox = svg.getBBox();
     svg.style.width = bbox.width + 40.0 + "px";
     svg.style.height = bbox.height + 40.0 + "px";
-    /*d3.csv(dfile, function(error, links) {
-     
-     var nodes = {};
-     
-     // Compute the distinct nodes from the links.
-     links.forEach(function(link) {
-     link.source = nodes[link.source] ||
-     (nodes[link.source] = {name: link.source});
-     link.target = nodes[link.target] ||
-     (nodes[link.target] = {name: link.target});
-     link.value = +link.value;
-     });
-     
-     var width = 960,
-     height = 500;
-     
-     var force = d3.layout.force()
-     .nodes(d3.values(nodes))
-     .links(links)
-     .size([width, height])
-     .linkDistance(200)
-     .charge(-300)
-     .on("tick", tick)
-     .start();
-     
-     // Set the range
-     var v = d3.scale.linear().range([0, 2]);
-     
-     // Scale the range of the data
-     v.domain([0, d3.max(links, function(d) {
-     return d.value;
-     })]);
-     
-     // asign a type per value to encode opacity
-     links.forEach(function(link) {
-     link.style += " stroke-width: "+v(link.value)+"px;";
-     });
-     
-     // build the arrow.
-     svg.append("svg:defs").selectAll("marker")
-     .data(["end"])      // Different link/path types can be defined here
-     .enter().append("svg:marker")    // This section adds in the arrows
-     .attr("id", String)
-     .attr("viewBox", "0 -5 10 10")
-     .attr("refX", 15)
-     .attr("refY", -1.5)
-     .attr("markerWidth", 6)
-     .attr("markerHeight", 6)
-     .attr("orient", "auto")
-     .attr("class","dirnetw")
-     .append("svg:path")
-     .attr("d", "M0,-5L10,0L0,5");
-     
-     // add the links and the arrows
-     var path = svg.append("svg:g").selectAll("path")
-     .data(force.links())
-     .enter().append("svg:path")
-     .attr("class", function(d) {
-     return "link";
-     }).attr("style", function(d) {
-     return d.style;
-     })
-     .attr("marker-end", "url(#end)");
-     
-     // define the nodes
-     var node = svg.selectAll(".node")
-     .data(force.nodes())
-     .enter().append("g")
-     .attr("class", "node")
-     .on("click", click)
-     .on("dblclick", dblclick)
-     .call(force.drag);
-     
-     // add the nodes
-     node.append("circle")
-     .attr("r", 5);
-     
-     // add the text 
-     node.append("text")
-     .attr("x", 12)
-     .attr("dy", ".35em")
-     .text(function(d) {
-     return d.name;
-     });
-     
-     // add the curvy lines
-     function tick() {
-     path.attr("d", function(d) {
-     var dx = d.target.x - d.source.x,
-     dy = d.target.y - d.source.y,
-     dr = Math.sqrt(dx * dx + dy * dy);
-     return "M" +
-     d.source.x + "," +
-     d.source.y + "A" +
-     dr + "," + dr + " 0 0,1 " +
-     d.target.x + "," +
-     d.target.y;
-     });
-     
-     node
-     .attr("transform", function(d) {
-     return "translate(" + d.x + "," + d.y + ")";
-     });
-     }
-     
-     // action to take on mouse click
-     function click() {
-     d3.select(this).select("text").transition()
-     .duration(750)
-     .attr("x", 22)
-     .style("fill", "steelblue")
-     .style("stroke", "lightsteelblue")
-     .style("stroke-width", ".5px")
-     .style("font", "20px sans-serif");
-     d3.select(this).select("circle").transition()
-     .duration(750)
-     .attr("r", 16)
-     .style("fill", "lightsteelblue");
-     }
-     
-     // action to take on mouse double click
-     function dblclick() {
-     d3.select(this).select("circle").transition()
-     .duration(750)
-     .attr("r", 6)
-     .style("fill", "#ccc");
-     d3.select(this).select("text").transition()
-     .duration(750)
-     .attr("x", 12)
-     .style("stroke", "none")
-     .style("fill", "black")
-     .style("stroke", "none")
-     .style("font", "10px sans-serif");
-     }
-     
-     });*/
 }
 
 function plotBars(svg, dfile, namecol, valuecols, naxis) {
@@ -395,40 +484,39 @@ function plotGroupedBars(svg, dfile, namecol, groupcol, valuecols, naxis) {
         nameAxis(svg, naxis);
     })
 }
-var dsid = 0;
-var width = 800;
-var height = 600;
-var margin = {top: 35, right: 100, bottom: 75, left: 100};
 //detection of automatic tags and its automatic plotting replacement
 $(function() {
     var plotid = 0;
     $('*[plotter]').each(function() {
-        var $this = $(this);
-        margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
-        //var plotfunc = window[$this.attr("plotter")];
-        var plotter = $this.attr("plotter");
-        $this.attr('id', 'plotid' + plotid);
-        var rootdiv = d3.select('#plotid' + plotid);
-        plotid++;
-        var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
-        var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        if (plotter === "plotRows") {
-            var file = $this.attr("dfile");
-            var ycols = null;
-            var y2cols = null;
-            var naxis = null;
-            try {
-                var ycols = $this.attr("ycols").split(",");
-                var y2cols = $this.attr("y2cols").split(",");
-                var naxis = $this.attr("naxis").split(",");
-            } catch (e) {
-            }
-            //alert(JSON.stringify(ycols.split(',')));
+        try {
+            var $this = $(this);
+            width = +ordflt($this.attr("width"), 800) - margin.left - margin.right, height = +ordflt($this.attr("height"), 600) - margin.top - margin.bottom;
+            //var plotfunc = window[$this.attr("plotter")];
+            var plotter = $this.attr("plotter");
+            $this.attr('id', 'plotid' + plotid);
+            var rootdiv = d3.select('#plotid' + plotid);
+            plotid++;
+            var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+            var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            plotRows(svg, file, null, ycols, y2cols, naxis);
-        } else if (plotter === "plotDot") {
-            var file = $this.attr("dot");
-            plotDot(svg, file);
+            var ycols = splitArguments($this.attr("ycols"));
+            var y2cols = splitArguments($this.attr("y2cols"));
+            var naxis = splitArguments($this.attr("naxis"));
+            var filled = isdf($this.attr("filled"));
+            var file = $this.attr("dfile");
+
+            if (plotter === "plotRows") {
+                //alert(JSON.stringify(ycols.split(',')));
+
+                plotRows(svg, file, null, ycols, y2cols, naxis, filled);
+            } else if (plotter === "plotDot") {
+                var file = $this.attr("dot");
+                plotDot(svg, file);
+            } else if (plotter === "plotNetwork") {
+                plotNetwork(svg, file);
+            }
+        } catch (e) {
+            console.error(e);
         }
     })
 });

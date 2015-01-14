@@ -3,6 +3,9 @@ path {
     stroke-width: 2;
     fill: none;
 }
+.path { 
+    fill: steelblue;
+}
 .d3y2 {
     stroke-dasharray: 5, 5;
 }
@@ -77,4 +80,10 @@ path {
     stroke: #333;
     stroke-width: 1.5px;
     fill: none;
+}
+
+.networklink {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .5;
 }
