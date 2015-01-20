@@ -6,6 +6,9 @@ path {
 .path { 
     fill: steelblue;
 }
+.area { 
+    fill: steelblue;
+}
 .d3y2 {
     stroke-dasharray: 5, 5;
 }
