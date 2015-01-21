@@ -11,24 +11,14 @@ var margin = {top: 35, right: 100, bottom: 75, left: 100};
 
 var d3plotter = function() {
 
+
+    var result = {};
+
+
     var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
     var ARGUMENT_NAMES = /([^\s,]+)/g;
 
-    var result = {};
-    var handlers = {};
-    result.handlers = handlers;
-
-    function handleParameter(name, x) {
-        return x;
-    }
-    result.handleParameter = handleParameter;
-
-    result.invoke = function(func, svg, divnode) {
-        console.log(getParamNames(func));
-    };
-
-
-    function splitComma(x, delim) {
+    function splitList(x, delim) {
         delim = orDefault(delim, ",");
         if (isEffective(x)) {
             return x.split(delim);
@@ -66,6 +56,43 @@ var d3plotter = function() {
     }
     result.getParamNames = getParamNames;
 
+    var handlers = {
+        xcol: function(x) {
+            return orDefault(x, null);
+        },
+        dfile: function(x) {
+            return x;
+        },
+        ycols: function(x) {
+            return splitList(x);
+        },
+        y2cols: function(x) {
+            return splitList(x);
+        },
+        naxis: function(x) {
+            return splitList(x);
+        },
+        filled: function(x) {
+            return isEffective(x);
+        }
+    };
+    result.handlers = handlers;
+
+    function handleParameter(name, x) {
+        return x;
+    }
+    result.handleParameter = handleParameter;
+
+    result.invoke = function(func, svg, divnode) {
+        var args = getParamNames(func);
+        var attr = new Array();
+        attr.push(svg);
+        for (var i = 1; i < args.length; i++) {//1: 0 is svg
+            attr.push(handlers[args[i]](divnode.attr(args[i])));
+        }
+        func.apply(func, attr);
+    };
+
     function nameAxis(svg, naxis) {
         if (naxis !== null) {
             svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + 2 * margin.bottom / 3) + ")").attr("class", "chart axisname").style("text-anchor", "middle").text(naxis[0]);
@@ -74,7 +101,6 @@ var d3plotter = function() {
     }
 
     function plotRows(svg, dfile, xcol, ycols, y2cols, naxis, filled) {
-        console.log(JSON.stringify(filled));
         var datsid = dsid++;
         var heii = height;
         var widi = width;
@@ -93,10 +119,8 @@ var d3plotter = function() {
         }
         var lines = new Array();
         var active = new Object();
-        console.log(JSON.stringify(ycols));
         for (var i = 0; i < ycols.length; i++) {
             var ycolsi = ycols[i];
-            console.log(JSON.stringify(filled));
             if (filled) {
                 lines.push(d3.svg.area().x(function(d) {
                     return thex(d[xcol]);
@@ -559,18 +583,7 @@ $(function() {
             var plotfunc = d3plotter[plotter];
             d3plotter.invoke(plotfunc, svg, $this);
             plotid++;
-
-            /*if (plotter === "plotRows") {
-             //alert(JSON.stringify(ycols.split(',')));
-             
-             d3plotter.plotRows(svg, file, xcol, ycols, y2cols, naxis, filled);
-             } else if (plotter === "plotDot") {
-             var file = $this.attr("dot");
-             d3plotter.plotDot(svg, file);
-             } else if (plotter === "plotNetwork") {
-             d3plotter.plotNetwork(svg, file);
-             }*/
-            ///*
+        //*
         } catch (e) {
             console.error(e);
         }//*/

@@ -110,7 +110,7 @@ plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],nu
 
 **Output**
 
-<div plotter="plotRows" dfile="csvfiles/stocks-alter.csv" xcol="Month" ycols='["AAPL","GOOG","MSFT","IBM"]' naxis='["Time","Stock quote"]'></div>
+<div plotter="plotRows" dfile="csvfiles/stocks-alter.csv" xcol="Month" ycols="AAPL,GOOG,MSFT,IBM" naxis="Time,Stock quote"></div>
 
 ### Interaction
 
