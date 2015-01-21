@@ -82,6 +82,7 @@ arguments must be given.
  - `ycols`: A list of names of the columns to plot with the first *y*-axis, if `null` no graphs are plot with that axis.
  - `y2cols`: A list of names of the columns to plot with the second *y*-axis, if `null` no graphs are plot with that axis.
  - `naxis`: The name of the *x*, *y* and *y2* axis, if `null`, the axes are not named, if length does not match 3, the known axis are labeled.
+ - `filled`: If `true`, the plots surface is filled, if `false`, the plots are depicted as lines.
 
 ### Sample
 
@@ -105,7 +106,7 @@ plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],nu
 **HTML (alternative)**
 
 ```HTML
-<div plotter="plotRows" dfile="csvfiles/stock-alter.csv" xcol="Month" ycols='["AAPL","GOOG","MSFT","IBM"]' naxis='["Time","Stock quote"]'></div>
+<div plotter="plotRows" dfile="csvfiles/stocks-alter.csv" xcol="Month" ycols="AAPL,GOOG,MSFT,IBM" naxis="Time,Stock quote"></div>
 ```
 
 **Output**
@@ -120,3 +121,80 @@ plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],nu
 ## `PlotBars`
 
 ## `PlotGroupedBars`
+
+This function plots one or more functions with a varying *x*-axis. The data can be plotted on at most two *y*-axes.
+
+### Data format
+
+The `.csv` file is structured as follows:
+
+> Minimum **two** columns. The columns should be named (alphanumerical values on
+> the first row of the `.csv` file). The *x* row contains numerical data
+> preferably ordered the *y* row(s) should contain numerical data as well.
+
+The function will detect the bounds of the *x* and *y* axes and plot the
+accordingly by printing lines between each *(x,y)* tuple. If the *x* rows
+are not ordered, the line will move back.
+
+### Arguments
+
+Besides the arguments introduced in the [introduction](#functions), the following
+arguments must be given.
+
+ - `xcol`: The name of the column that contains the values for the *x*-axis, if `null` the row number is used.
+ - `ycols`: A list of names of the columns to plot with the first *y*-axis, if `null` no graphs are plot with that axis.
+ - `y2cols`: A list of names of the columns to plot with the second *y*-axis, if `null` no graphs are plot with that axis.
+ - `naxis`: The name of the *x*, *y* and *y2* axis, if `null`, the axes are not named, if length does not match 3, the known axis are labeled.
+ - `filled`: If `true`, the plots surface is filled, if `false`, the plots are depicted as lines.
+
+### Sample
+
+**HTML**
+
+```HTML
+<div id="sample-plotrows"></div>
+```
+
+**JavaScript**
+
+```JavaScript
+var margin = {top: 35, right: 100, bottom: 75, left: 100}, width = 800 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
+var rootdiv = d3.select("#sample-plotrows");
+var dsid = 1;
+var svgr = rootdiv.append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+var svg = svgr.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+plotRows(svg,"csvfiles/stocks-alter.csv","Month",["AAPL","GOOG","MSFT","IBM"],null,["Time","Stock quote"]);
+```
+
+**HTML (alternative)**
+
+```HTML
+<div plotter="plotRows" dfile="csvfiles/stocks-alter.csv" xcol="Month" ycols="AAPL,GOOG,MSFT,IBM" naxis="Time,Stock quote"></div>
+```
+
+**Output**
+
+<div plotter="plotGroupedBars" dfile="csvfiles/stocks-alter.csv" xcol="Month" ycols="AAPL,GOOG,MSFT,IBM" naxis="Time,Stock quote"></div>
+
+## Parameters
+
+In `d3plotter`, the name of the parameters also implies how the parameters are parsed as well as the type and semantics. In this file we give a summary.
+
+
+| Name  | Functions  | Type  | Handler | Comment |
+|---|---:|---|---|---|
+| `svg`            | `0` | d3 **node** element | none | |
+| `dfile`          | `123` | **string** containing filename | `.attr` | |
+| `xcol`,`gcol`    | `3` | **string** of csv column | `orDefault(null)`  | `gcol` is used to a a *"groupby"* directive |
+| `ycols`,`y2cols` | `123` | **lis**t of strings of the csv columns to be plotted | `splitArguments` |  |
+| `naxis`          | `123` | **list** of strings of the axis | `splitArguments` | |
+| `filled`         | `1--` | **boolean** determining whether the lines should be filled | `isDefined` | |
+
+List of functions:
+
+| # | Function |
+|---|---|
+| 0 | &lt;all&gt; |
+| 1 | `plotRows` |
+| 2 | `plotBars` |
+| 3 | `plotGroupedBars` |

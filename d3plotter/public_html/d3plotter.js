@@ -3,12 +3,6 @@ var width = 800;
 var height = 600;
 var margin = {top: 35, right: 100, bottom: 75, left: 100};
 
-/*
- * Parameter names and handlers
- *  - svg | node to plot to |
- * 
- */
-
 var d3plotter = function() {
 
 
@@ -88,7 +82,12 @@ var d3plotter = function() {
         var attr = new Array();
         attr.push(svg);
         for (var i = 1; i < args.length; i++) {//1: 0 is svg
-            attr.push(handlers[args[i]](divnode.attr(args[i])));
+            var hand = handlers[args[i]];
+            var atti = divnode.attr(args[i]);
+            if (isEffective(hand)) {
+                atti = hand(atti);
+            }
+            attr.push(atti);
         }
         func.apply(func, attr);
     };
@@ -583,7 +582,7 @@ $(function() {
             var plotfunc = d3plotter[plotter];
             d3plotter.invoke(plotfunc, svg, $this);
             plotid++;
-        //*
+            //*
         } catch (e) {
             console.error(e);
         }//*/
