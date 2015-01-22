@@ -54,6 +54,9 @@ var d3plotter = function() {
         xcol: function(x) {
             return orDefault(x, null);
         },
+        gcol: function(x) {
+            return orDefault(x, null);
+        },
         dfile: function(x) {
             return x;
         },
